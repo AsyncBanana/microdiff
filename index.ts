@@ -15,7 +15,11 @@ export default function diff(
 				type: "REMOVE",
 				path: [key],
 			});
-		} else if (obj[key] && typeof obj[key] === "object") {
+		} else if (
+			obj[key] &&
+			typeof obj[key] === "object" &&
+			!(obj[key] instanceof Date)
+		) {
 			const nestedDiffs = diff(obj[key], newObj[key]);
 			diffs.push(
 				...nestedDiffs.map((difference) => {
@@ -23,7 +27,14 @@ export default function diff(
 					return difference;
 				})
 			);
-		} else if (obj[key] !== newObj[key]) {
+		} else if (
+			obj[key] !== newObj[key] &&
+			!(
+				obj[key] instanceof Date &&
+				newObj[key] instanceof Date &&
+				+obj[key] === +newObj[key]
+			)
+		) {
 			diffs.push({
 				path: [key],
 				type: "CHANGE",
