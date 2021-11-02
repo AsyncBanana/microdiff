@@ -6,10 +6,10 @@
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"scripts": {
-		"build": "tsc",
-		"test": "tsc && uvu tests",
-		"bench": "tsc && node bench.js",
-		"prepublish": "tsc"
+		"build": "tsc && prettier -w dist/*",
+		"test": "npm run build && uvu tests",
+		"bench": "npm run build && node bench.js",
+		"prepublish": "npm run build"
 	},
 	"keywords": [
 		"diff",
@@ -23,6 +23,8 @@
 	"devDependencies": {
 		"deep-diff": "^1.0.2",
 		"deep-object-diff": "^1.1.0",
+		"diff": "^5.0.0",
+		"picocolors": "^1.0.0",
 		"prettier": "^2.4.1",
 		"typescript": "^4.4.4",
 		"uvu": "^0.5.2"
