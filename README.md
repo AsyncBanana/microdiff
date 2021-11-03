@@ -1,6 +1,6 @@
 <div align="center">
 
-![Microdiff Logo](/Logo.svg)
+![Microdiff Logo](https://raw.githubusercontent.com/AsyncBanana/microdiff/master/Logo.svg)
 
 Microdiff is a tiny (currently <1kb), fast, zero dependency object and array comparison library. It is significantly faster than most other deep comparison libraries, and has full TypeScript support.
 
@@ -8,7 +8,7 @@ Microdiff is a tiny (currently <1kb), fast, zero dependency object and array com
 
 </div>
 
-## Get started
+# Get started
 
 First, install Microdiff
 
@@ -34,3 +34,14 @@ console.log(diff(obj1, obj2));
 ```
 
 There are three different types of changes. `CREATE`, `REMOVE`, and `CHANGE`. The `path` property gives a path to the property in the new object (or the old object in the case of `REMOVE`). Each element in the array is a key to the next property a level deeper until you get to the property changed. The `value` property exists in types `CREATE` and `CHANGE`, and it contains the value of the property added/changed.
+
+# Benchmarks
+
+```
+deep-diff: 23054ns - 206% slower
+deep-object-diff: 30809ns - 309% slower
+jsdiff: 112154ns - 1389% slower
+microdiff: 7530ns - Fastest
+```
+
+These benchmarks are currently only for one small object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
