@@ -16,7 +16,9 @@ First, install Microdiff
 npm i microdiff
 ```
 
-Then, simply import it and run it on two objects.
+If you are using Deno, you can import it from Deno.land with the link `https://deno.land/x/microdiff@VERSION/index.ts` (remember to change `@VERSION` to the version you want to use).
+
+After you install it, simply import it and run it on two objects.
 
 ```js
 import diff from "microdiff";
