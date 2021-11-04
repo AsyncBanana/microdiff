@@ -38,10 +38,17 @@ There are three different types of changes. `CREATE`, `REMOVE`, and `CHANGE`. Th
 # Benchmarks
 
 ```
-deep-diff: 23054ns - 206% slower
-deep-object-diff: 30809ns - 309% slower
-jsdiff: 112154ns - 1389% slower
-microdiff: 7530ns - Fastest
+Benchmarks: Small object
+deep-diff: 17929ns - 409% slower
+deep-object-diff: 10763ns - 206% slower
+jsdiff: 79700ns - 2164% slower
+microdiff: 3520ns - Fastest
+
+Benchmarks: Large Object
+deep-diff: 272887ns - 259% slower
+deep-object-diff: 160019ns - 111% slower
+jsdiff: 1688294ns - 2123% slower
+microdiff: 75934ns - Fastest
 ```
 
 These benchmarks are currently only for one small object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
