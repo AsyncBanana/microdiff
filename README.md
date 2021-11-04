@@ -51,4 +51,4 @@ jsdiff: 1688294ns - 2123% slower
 microdiff: 75934ns - Fastest
 ```
 
-These benchmarks are currently only for one small object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
+These benchmarks are currently only for one small object and a very large object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
