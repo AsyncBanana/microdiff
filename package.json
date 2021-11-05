@@ -1,10 +1,10 @@
 {
 	"name": "microdiff",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Small, fast, zero dependency deep object and array comparison",
 	"main": "./dist/index.js",
-	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"exports": "./dist/index.js",
 	"scripts": {
 		"build": "tsc && prettier -w dist/*",
 		"test": "npm run build && uvu tests",
