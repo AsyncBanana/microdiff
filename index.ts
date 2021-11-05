@@ -3,7 +3,8 @@ interface Difference {
 	path: string[];
 	value?: any;
 }
-
+const t = true;
+const richTypes = { Date: t, RegExp: t, String: t, Number: t };
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[]
@@ -18,7 +19,7 @@ export default function diff(
 		} else if (
 			obj[key] &&
 			typeof obj[key] === "object" &&
-			!(obj[key] instanceof Date)
+			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name]
 		) {
 			const nestedDiffs = diff(obj[key], newObj[key]);
 			diffs.push(
@@ -30,9 +31,11 @@ export default function diff(
 		} else if (
 			obj[key] !== newObj[key] &&
 			!(
-				obj[key] instanceof Date &&
-				newObj[key] instanceof Date &&
-				+obj[key] === +newObj[key]
+				typeof obj[key] === "object" &&
+				typeof newObj[key] === "object" &&
+				(isNaN(obj[key])
+					? obj[key] + "" === newObj[key] + ""
+					: +obj[key] === +newObj[key])
 			)
 		) {
 			diffs.push({
