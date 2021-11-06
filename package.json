@@ -6,7 +6,7 @@
 	"types": "./dist/index.d.ts",
 	"exports": "./dist/index.js",
 	"scripts": {
-		"build": "tsc && prettier -w dist/*",
+		"build": "tsc && prettier -w dist/* --loglevel warn",
 		"test": "npm run build && uvu tests",
 		"bench": "npm run build && node bench.js",
 		"prepublish": "npm run build"
