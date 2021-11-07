@@ -18,7 +18,9 @@ export default function diff(
 			});
 		} else if (
 			obj[key] &&
+			newObj[key] &&
 			typeof obj[key] === "object" &&
+			typeof newObj[key] === "object" &&
 			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name]
 		) {
 			const nestedDiffs = diff(obj[key], newObj[key]);

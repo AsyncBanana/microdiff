@@ -29,4 +29,24 @@ test("remove raw value", () => {
 	]);
 });
 
+test("replace object with null", () => {
+	assert.equal(diff({ object: { test: true } }, { object: null }), [
+		{
+			type: "CHANGE",
+			path: ["object"],
+			value: null,
+		},
+	]);
+});
+
+test("replace object with other value", () => {
+	assert.equal(diff({ object: { test: true } }, { object: "string" }), [
+		{
+			type: "CHANGE",
+			path: ["object"],
+			value: "string",
+		},
+	]);
+});
+
 test.run();
