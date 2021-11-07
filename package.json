@@ -9,7 +9,7 @@
 		"default": "./dist/index.js"
 	},
 	"scripts": {
-		"build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module es2020  && prettier -w dist/* --loglevel warn",
+		"build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module es2020  && npx prettier -w dist/* --loglevel warn",
 		"test": "npm run build && uvu tests",
 		"bench": "npm run build && node bench.js",
 		"prepublish": "npm run build"
