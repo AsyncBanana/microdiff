@@ -43,6 +43,12 @@ console.log(diff(obj1, obj2));
 // [{type: "CREATE", path: ["newProperty"], value: "new"}]
 ```
 
+If you are using CommonJS, you can import it like this:
+
+```js
+const diff = require("microdiff").default;
+```
+
 There are three different types of changes. `CREATE`, `REMOVE`, and `CHANGE`. The `path` property gives a path to the property in the new object (or the old object in the case of `REMOVE`). Each element in the array is a key to the next property a level deeper until you get to the property changed. The `value` property exists in types `CREATE` and `CHANGE`, and it contains the value of the property added/changed.
 
 # Benchmarks
