@@ -10,7 +10,9 @@ export default function diff(
 	newObj: Record<string, any> | any[]
 ): Difference[] {
 	let diffs: Difference[] = [];
-	for (const key in obj) {
+	const keys = Object.keys(obj);
+	for(let i = 0; i < keys.length; i++) {
+		const key = keys[i];
 		if (!(key in newObj)) {
 			diffs.push({
 				type: "REMOVE",
@@ -45,7 +47,9 @@ export default function diff(
 			});
 		}
 	}
-	for (const key in newObj) {
+	const nkeys = Object.keys(newObj);
+	for(let i = 0; i < nkeys.length; i++) {
+		const key = nkeys[i];
 		if (!(key in obj)) {
 			diffs.push({
 				type: "CREATE",
