@@ -7,7 +7,8 @@ const t = true;
 const richTypes = { Date: t, RegExp: t, String: t, Number: t };
 export default function diff(
 	obj: Record<string, any> | any[],
-	newObj: Record<string, any> | any[]
+	newObj: Record<string, any> | any[],
+	stack: Record<string, any>[] = []
 ): Difference[] {
 	let diffs: Difference[] = [];
 	for (const key in obj) {
@@ -21,9 +22,10 @@ export default function diff(
 			newObj[key] &&
 			typeof obj[key] === "object" &&
 			typeof newObj[key] === "object" &&
-			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name]
+			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name] &&
+			!stack.includes(obj[key])
 		) {
-			const nestedDiffs = diff(obj[key], newObj[key]);
+			const nestedDiffs = diff(obj[key], newObj[key], stack.concat(obj[key]));
 			diffs.push(
 				...nestedDiffs.map((difference) => {
 					difference.path.unshift(key);
