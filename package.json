@@ -1,10 +1,12 @@
 {
 	"name": "microdiff",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "Small, fast, zero dependency deep object and array comparison",
 	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
+		"import": "./dist/index.js",
 		"require": "./dist/index.cjs",
 		"default": "./dist/index.js"
 	},
