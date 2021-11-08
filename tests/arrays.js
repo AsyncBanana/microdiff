@@ -21,4 +21,20 @@ test("nested array", () => {
 	]);
 });
 
+test("object in array in object", () => {
+	assert.equal(
+		diff(
+			{ test: ["test", { test: true }] },
+			{ test: ["test", { test: false }] }
+		),
+		[
+			{
+				type: "CHANGE",
+				path: ["test", "1", "test"],
+				value: false,
+			},
+		]
+	);
+});
+
 test.run();

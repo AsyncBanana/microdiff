@@ -25,7 +25,7 @@ export default function diff(
 			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name] &&
 			!stack.includes(obj[key])
 		) {
-			const nestedDiffs = diff(obj[key], newObj[key], stack.concat(obj[key]));
+			const nestedDiffs = diff(obj[key], newObj[key], stack.concat([obj[key]]));
 			diffs.push(
 				...nestedDiffs.map((difference) => {
 					difference.path.unshift(key);
