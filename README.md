@@ -10,7 +10,7 @@ Microdiff is a tiny (currently <1kb), fast, zero dependency object and array com
 
 # Features
 
-- 🚀 100%+ faster than other object diff libraries
+- 🚀 More than double the speed of other object diff libraries
 - 📦 Extremely lightweight, <1kb minified
 - 🌎 Supports Deno, Node, the web, and even service workers. Also comes with built in Typescript types
 - 🔰 Very easy to use, having just a single `diff()` function
