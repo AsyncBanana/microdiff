@@ -12,7 +12,7 @@ export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
-	stack: Record<string, any>[] = []
+	_stack: Record<string, any>[] = []
 ): Difference[] {
 	let diffs: Difference[] = [];
 	for (const key in obj) {
@@ -32,13 +32,13 @@ export default function diff(
 			newObjKey &&
 			areObjects &&
 			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
-			(options.cyclesFix ? !stack.includes(obj[key]) : true)
+			(options.cyclesFix ? !_stack.includes(obj[key]) : true)
 		) {
 			const nestedDiffs = diff(
 				objKey,
 				newObjKey,
 				options,
-				options.cyclesFix ? stack.concat([objKey]) : []
+				options.cyclesFix ? _stack.concat([objKey]) : []
 			);
 			diffs.push.apply(
 				nestedDiffs.map((difference) => {
