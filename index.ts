@@ -83,19 +83,24 @@ function patch(
     var newObj = JSON.parse(JSON.stringify(obj)); // deep clone the source object
 
     for (const diff of diffs) {
+        var currObj = newObj;
+        var diffPathLength = diff.path.length;
+        var lastPathElement = diff.path[diffPathLength - 1];
+        for (var i = 0; i < diffPathLength - 1; i++) {
+            currObj = currObj[diff.path[i]];
+        }
+
         switch(diff.type) {
             case "CREATE": // fall-through - equal to: case "CREATE" || "CHANGE"
             case "CHANGE":
-                for (const path of diff.path) {
-                    newObj[path] = diff.value;
-                }
+                currObj[lastPathElement] = diff.value;
                 break;
             case "REMOVE":
                 for (const path of diff.path) {
-                    if (Array.isArray(newObj)) {
-                        newObj = newObj.filter((e, i) => i !== path)
+                    if (Array.isArray(currObj[lastPathElement])) {
+                        currObj[lastPathElement] = currObj[lastPathElement].filter((e: any, i: number) => i !== path)
                     } else {
-                        delete newObj[path];
+                        delete currObj[lastPathElement];
                     }
                 }
                 break;
@@ -104,4 +109,3 @@ function patch(
 
     return newObj;
 }
-
