@@ -8,7 +8,7 @@ interface Options {
 }
 const t = true;
 const richTypes = { Date: t, RegExp: t, String: t, Number: t };
-export default function diff(
+export function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
@@ -76,7 +76,7 @@ export default function diff(
 	return diffs;
 }
 
-function patch(
+export function patch(
     obj: Record<string, any> | any[],
     diffs: Difference[]
 ): Record<string, any> | any[] {
