@@ -3,11 +3,15 @@ interface Difference {
 	path: string[];
 	value?: any;
 }
+interface Options {
+	cyclesFix: boolean;
+}
 const t = true;
 const richTypes = { Date: t, RegExp: t, String: t, Number: t };
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
+	options: Partial<Options> = { cyclesFix: true },
 	stack: Record<string, any>[] = []
 ): Difference[] {
 	let diffs: Difference[] = [];
@@ -17,35 +21,44 @@ export default function diff(
 				type: "REMOVE",
 				path: [key],
 			});
-		} else if (
-			obj[key] &&
-			newObj[key] &&
-			typeof obj[key] === "object" &&
-			typeof newObj[key] === "object" &&
-			!richTypes[Object.getPrototypeOf(obj[key]).constructor.name] &&
-			!stack.includes(obj[key])
+			continue;
+		}
+		const objKey = obj[key];
+		const newObjKey = newObj[key];
+		const areObjects =
+			typeof objKey === "object" && typeof newObjKey === "object";
+		if (
+			objKey &&
+			newObjKey &&
+			areObjects &&
+			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
+			(options.cyclesFix ? !stack.includes(obj[key]) : true)
 		) {
-			const nestedDiffs = diff(obj[key], newObj[key], stack.concat([obj[key]]));
-			diffs.push(
-				...nestedDiffs.map((difference) => {
+			const nestedDiffs = diff(
+				objKey,
+				newObjKey,
+				options,
+				options.cyclesFix ? stack.concat([objKey]) : []
+			);
+			diffs.push.apply(
+				nestedDiffs.map((difference) => {
 					difference.path.unshift(key);
 					return difference;
 				})
 			);
 		} else if (
-			obj[key] !== newObj[key] &&
+			objKey !== newObjKey &&
 			!(
-				typeof obj[key] === "object" &&
-				typeof newObj[key] === "object" &&
-				(isNaN(obj[key])
-					? obj[key] + "" === newObj[key] + ""
-					: +obj[key] === +newObj[key])
+				areObjects &&
+				(isNaN(objKey)
+					? objKey + "" === newObjKey + ""
+					: +objKey === +newObjKey)
 			)
 		) {
 			diffs.push({
 				path: [key],
 				type: "CHANGE",
-				value: newObj[key],
+				value: newObjKey,
 			});
 		}
 	}

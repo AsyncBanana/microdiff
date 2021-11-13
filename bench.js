@@ -19,7 +19,7 @@ async function benchmark(name, obj, newObj, exclude = []) {
 			continue;
 		}
 		times[benchmark] = [];
-		for (let i = 1; i < 100; i++) {
+		for (let i = 1; i < 10000; i++) {
 			let time = hrtime();
 			benchmarks[benchmark]();
 			times[benchmark].push(hrtime(time)[1]);
