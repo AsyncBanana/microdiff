@@ -75,3 +75,33 @@ export default function diff(
 	}
 	return diffs;
 }
+
+function patch(
+    obj: Record<string, any> | any[],
+    diffs: Difference[]
+): Record<string, any> | any[] {
+    var newObj = JSON.parse(JSON.stringify(obj)); // deep clone the source object
+
+    for (const diff of diffs) {
+        switch(diff.type) {
+            case "CREATE": // fall-through - equal to: case "CREATE" || "CHANGE"
+            case "CHANGE":
+                for (const path of diff.path) {
+                    newObj[path] = diff.value;
+                }
+                break;
+            case "REMOVE":
+                for (const path of diff.path) {
+                    if (Array.isArray(newObj)) {
+                        newObj = newObj.filter((e, i) => i !== path)
+                    } else {
+                        delete newObj[path];
+                    }
+                }
+                break;
+        }
+    }
+
+    return newObj;
+}
+
