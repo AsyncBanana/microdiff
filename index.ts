@@ -41,6 +41,7 @@ export default function diff(
 				options.cyclesFix ? _stack.concat([objKey]) : []
 			);
 			diffs.push.apply(
+				diffs,
 				nestedDiffs.map((difference) => {
 					difference.path.unshift(key);
 					return difference;
