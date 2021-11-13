@@ -54,6 +54,14 @@ The `path` property gives a path to the property in the new object (or the old o
 Each element in the paths is a key to the next property a level deeper until you get to the property changed, and it is string or a number, depending on whether the object is an Array or Object (Objects with number keys will still be strings).
 The `value` property exists in types `CREATE` and `CHANGE`, and it contains the value of the property added/changed.
 
+# Cycles support
+
+By default cycles are supported, but if you are sure that the object has no cycles (for example if you are parsing JSON) you can disable cycles using the `cyclesFix` option.
+
+```js
+diff(obj1, obj2, { cyclesFix: false });
+```
+
 # Benchmarks
 
 ```
