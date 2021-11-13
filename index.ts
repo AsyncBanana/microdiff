@@ -1,6 +1,6 @@
 interface Difference {
 	type: "CREATE" | "REMOVE" | "CHANGE";
-	path: string[];
+	path: (string | number)[];
 	value?: any;
 }
 interface Options {
@@ -16,14 +16,15 @@ export default function diff(
 ): Difference[] {
 	let diffs: Difference[] = [];
 	for (const key in obj) {
+		const objKey = obj[key];
+		const path = Array.isArray(obj) ? +key : key;
 		if (!(key in newObj)) {
 			diffs.push({
 				type: "REMOVE",
-				path: [key],
+				path: [path],
 			});
 			continue;
 		}
-		const objKey = obj[key];
 		const newObjKey = newObj[key];
 		const areObjects =
 			typeof objKey === "object" && typeof newObjKey === "object";
@@ -32,7 +33,7 @@ export default function diff(
 			newObjKey &&
 			areObjects &&
 			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
-			(options.cyclesFix ? !_stack.includes(obj[key]) : true)
+			(options.cyclesFix ? !_stack.includes(objKey) : true)
 		) {
 			const nestedDiffs = diff(
 				objKey,
@@ -43,7 +44,7 @@ export default function diff(
 			diffs.push.apply(
 				diffs,
 				nestedDiffs.map((difference) => {
-					difference.path.unshift(key);
+					difference.path.unshift(path);
 					return difference;
 				})
 			);
@@ -57,7 +58,7 @@ export default function diff(
 			)
 		) {
 			diffs.push({
-				path: [key],
+				path: [path],
 				type: "CHANGE",
 				value: newObjKey,
 			});
@@ -67,7 +68,7 @@ export default function diff(
 		if (!(key in obj)) {
 			diffs.push({
 				type: "CREATE",
-				path: [key],
+				path: [Array.isArray(newObj) ? +key : key],
 				value: newObj[key],
 			});
 		}

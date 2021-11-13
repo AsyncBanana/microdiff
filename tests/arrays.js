@@ -6,7 +6,7 @@ test("top level array & array diff", () => {
 	assert.equal(diff(["test", "testing"], ["test"]), [
 		{
 			type: "REMOVE",
-			path: ["1"],
+			path: [1],
 		},
 	]);
 });
@@ -15,7 +15,7 @@ test("nested array", () => {
 	assert.equal(diff(["test", ["test"]], ["test", ["test", "test2"]]), [
 		{
 			type: "CREATE",
-			path: ["1", "1"],
+			path: [1, 1],
 			value: "test2",
 		},
 	]);
@@ -30,7 +30,7 @@ test("object in array in object", () => {
 		[
 			{
 				type: "CHANGE",
-				path: ["test", "1", "test"],
+				path: ["test", 1, "test"],
 				value: false,
 			},
 		]
