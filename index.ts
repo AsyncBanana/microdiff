@@ -6,8 +6,10 @@ interface Difference {
 interface Options {
 	cyclesFix: boolean;
 }
+
 const t = true;
 const richTypes = { Date: t, RegExp: t, String: t, Number: t };
+
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
@@ -15,9 +17,11 @@ export default function diff(
 	_stack: Record<string, any>[] = []
 ): Difference[] {
 	let diffs: Difference[] = [];
+	const isObjArray = Array.isArray(obj);
+
 	for (const key in obj) {
 		const objKey = obj[key];
-		const path = Array.isArray(obj) ? +key : key;
+		const path = isObjArray ? +key : key;
 		if (!(key in newObj)) {
 			diffs.push({
 				type: "REMOVE",
@@ -64,11 +68,13 @@ export default function diff(
 			});
 		}
 	}
+
+	const isNewObjArray = Array.isArray(newObj);
 	for (const key in newObj) {
 		if (!(key in obj)) {
 			diffs.push({
 				type: "CREATE",
-				path: [Array.isArray(newObj) ? +key : key],
+				path: [isNewObjArray ? +key : key],
 				value: newObj[key],
 			});
 		}
