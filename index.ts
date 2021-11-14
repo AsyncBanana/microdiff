@@ -82,8 +82,12 @@ export function patch(
 ): Record<string, any> | any[] {
     var newObj = JSON.parse(JSON.stringify(obj)); // deep clone the source object
     var arrayDelQueue = []
+    var removeSymbol = Symbol()
 
     for (const diff of diffs) {
+        if (!diff.path || diff.path.length === 0)
+            continue;
+
         var currObj = newObj;
         var diffPathLength = diff.path.length;
         var lastPathElement = diff.path[diffPathLength - 1];
@@ -99,25 +103,22 @@ export function patch(
                 break;
             case "REMOVE":
                 if (Array.isArray(currObj)) {
-                    arrayDelQueue.push({pos: lastPathElement, removeIndex: (index: number) => {
+                    (currObj as any)[lastPathElement] = removeSymbol;
+                    arrayDelQueue.push(() => {
                         if (secondLastPathElement !== undefined) {
-                            (currObj as any)[secondLastPathElement] = (currObj as any)[secondLastPathElement].filter((e: any, i: number) => i !== index);
+                            (currObj as any)[secondLastPathElement] = (currObj as any)[secondLastPathElement].filter((e: any) => e !== removeSymbol);
                         } else {
-                            newObj = newObj.filter((e: any, i: number) => i !== index);
+                            newObj = newObj.filter((e: any) => e !== removeSymbol);
                         }
-                    }})
+                    })
                 } else {
                     delete currObj[lastPathElement];
                 }
                 break;
         }
     }
-
-    arrayDelQueue.sort((x, y) => +y.pos - +x.pos);
     
-    for (var arrayDeletion of arrayDelQueue) {
-        arrayDeletion.removeIndex(+arrayDeletion.pos);
-    }
+    arrayDelQueue.forEach(arrayDeletion => arrayDeletion())
 
     return newObj;
 }
