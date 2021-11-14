@@ -81,11 +81,13 @@ export function patch(
     diffs: Difference[]
 ): Record<string, any> | any[] {
     var newObj = JSON.parse(JSON.stringify(obj)); // deep clone the source object
+    var arrayDelQueue = []
 
     for (const diff of diffs) {
         var currObj = newObj;
         var diffPathLength = diff.path.length;
         var lastPathElement = diff.path[diffPathLength - 1];
+        var secondLastPathElement = diff.path[diffPathLength - 2]
         for (var i = 0; i < diffPathLength - 1; i++) {
             currObj = currObj[diff.path[i]];
         }
@@ -96,15 +98,25 @@ export function patch(
                 currObj[lastPathElement] = diff.value;
                 break;
             case "REMOVE":
-                for (const path of diff.path) {
-                    if (Array.isArray(currObj[lastPathElement])) {
-                        currObj[lastPathElement] = currObj[lastPathElement].filter((e: any, i: number) => i !== path)
-                    } else {
-                        delete currObj[lastPathElement];
-                    }
+                if (Array.isArray(currObj)) {
+                    arrayDelQueue.push({pos: lastPathElement, removeIndex: (index: number) => {
+                        if (secondLastPathElement !== undefined) {
+                            (currObj as any)[secondLastPathElement] = (currObj as any)[secondLastPathElement].filter((e: any, i: number) => i !== index);
+                        } else {
+                            newObj = newObj.filter((e: any, i: number) => i !== index);
+                        }
+                    }})
+                } else {
+                    delete currObj[lastPathElement];
                 }
                 break;
         }
+    }
+
+    arrayDelQueue.sort((x, y) => +y.pos - +x.pos);
+    
+    for (var arrayDeletion of arrayDelQueue) {
+        arrayDeletion.removeIndex(+arrayDeletion.pos);
     }
 
     return newObj;
