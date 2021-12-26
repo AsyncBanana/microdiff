@@ -19,6 +19,7 @@ test("Handles unequal number classes", () => {
 			type: "CHANGE",
 			path: ["number"],
 			value: 2,
+			oldValue: 1,
 		},
 	]);
 });

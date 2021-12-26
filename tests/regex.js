@@ -12,6 +12,7 @@ test("Handles unequal regex", () => {
 			type: "CHANGE",
 			path: ["regex"],
 			value: /b/,
+			oldValue: /a/,
 		},
 	]);
 });

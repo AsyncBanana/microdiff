@@ -7,6 +7,7 @@ test("top level array & array diff", () => {
 		{
 			type: "REMOVE",
 			path: [1],
+			oldValue: "testing",
 		},
 	]);
 });
@@ -32,6 +33,7 @@ test("object in array in object", () => {
 				type: "CHANGE",
 				path: ["test", 1, "test"],
 				value: false,
+				oldValue: true,
 			},
 		]
 	);

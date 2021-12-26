@@ -17,6 +17,7 @@ test("change raw value", () => {
 			type: "CHANGE",
 			path: ["test"],
 			value: false,
+			oldValue: true,
 		},
 	]);
 });
@@ -25,6 +26,7 @@ test("remove raw value", () => {
 		{
 			type: "REMOVE",
 			path: ["test2"],
+			oldValue: true,
 		},
 	]);
 });
@@ -35,6 +37,7 @@ test("replace object with null", () => {
 			type: "CHANGE",
 			path: ["object"],
 			value: null,
+			oldValue: { test: true },
 		},
 	]);
 });
@@ -45,6 +48,7 @@ test("replace object with other value", () => {
 			type: "CHANGE",
 			path: ["object"],
 			value: "string",
+			oldValue: { test: true },
 		},
 	]);
 });

@@ -1,6 +1,6 @@
 {
 	"name": "microdiff",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"description": "Small, fast, zero dependency deep object and array comparison",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",

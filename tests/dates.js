@@ -11,6 +11,7 @@ test("Handles unequal dates", () => {
 			path: ["date"],
 			type: "CHANGE",
 			value: new Date(2),
+			oldValue: new Date(1),
 		},
 	]);
 });
@@ -20,6 +21,7 @@ test("Handles value being a date and the other not", () => {
 			path: ["date"],
 			type: "CHANGE",
 			value: "not date",
+			oldValue: new Date(1),
 		},
 	]);
 	assert.equal(diff({ date: "not date" }, { date: new Date(1) }), [
@@ -27,6 +29,7 @@ test("Handles value being a date and the other not", () => {
 			path: ["date"],
 			type: "CHANGE",
 			value: new Date(1),
+			oldValue: "not date",
 		},
 	]);
 });
