@@ -2,6 +2,8 @@ interface Difference {
 	type: "CREATE" | "REMOVE" | "CHANGE";
 	path: (string | number)[];
 	value?: any;
+	oldValue?: any;
+	deletedValue?: any;
 }
 interface Options {
 	cyclesFix: boolean;
@@ -26,6 +28,7 @@ export default function diff(
 			diffs.push({
 				type: "REMOVE",
 				path: [path],
+				deletedValue: obj[key]
 			});
 			continue;
 		}
@@ -65,6 +68,7 @@ export default function diff(
 				path: [path],
 				type: "CHANGE",
 				value: newObjKey,
+				oldValue: objKey
 			});
 		}
 	}
