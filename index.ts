@@ -8,8 +8,7 @@ interface Options {
 	cyclesFix: boolean;
 }
 
-const t = true;
-const richTypes = { Date: t, RegExp: t, String: t, Number: t };
+const richTypes = { Date: true, RegExp: true, String: true, Number: true };
 
 export default function diff(
 	obj: Record<string, any> | any[],
