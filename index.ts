@@ -8,12 +8,12 @@ interface Options {
 	cyclesFix: boolean;
 }
 
-const richTypes = { Date: true, RegExp: true, String: true, Number: true };
-
+const richTypes = { Date: 1, RegExp: 1, String: 1, Number: 1 };
+const o = "object";
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
-	options: Partial<Options> = { cyclesFix: true },
+	opts: Partial<Options> = { cyclesFix: true },
 	_stack: Record<string, any>[] = []
 ): Difference[] {
 	let diffs: Difference[] = [];
@@ -31,27 +31,23 @@ export default function diff(
 			continue;
 		}
 		const newObjKey = newObj[key];
-		const areObjects =
-			typeof objKey === "object" && typeof newObjKey === "object";
+		const areObjects = typeof objKey === o && typeof newObjKey === o;
 		if (
 			objKey &&
 			newObjKey &&
 			areObjects &&
 			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
-			(options.cyclesFix ? !_stack.includes(objKey) : true)
+			(!opts.cyclesFix || !_stack.includes(objKey))
 		) {
 			const nestedDiffs = diff(
 				objKey,
 				newObjKey,
-				options,
-				options.cyclesFix ? _stack.concat([objKey]) : []
+				opts,
+				opts.cyclesFix ? _stack.concat([objKey]) : []
 			);
 			diffs.push.apply(
 				diffs,
-				nestedDiffs.map((difference) => {
-					difference.path.unshift(path);
-					return difference;
-				})
+				nestedDiffs.map((difference) => (difference.path.unshift(path), difference))
 			);
 		} else if (
 			objKey !== newObjKey &&
