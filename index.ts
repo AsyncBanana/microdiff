@@ -56,6 +56,11 @@ export default function diff(
 		} else if (
 			objKey !== newObjKey &&
 			!(
+				// treat NaN values as equivalent
+				typeof objKey === "number" && isNaN(objKey) &&
+				typeof newObjKey === "number" && isNaN(newObjKey)
+			) &&
+			!(
 				areObjects &&
 				(isNaN(objKey)
 					? objKey + "" === newObjKey + ""
