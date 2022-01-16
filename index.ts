@@ -38,7 +38,7 @@ export default function diff(
 			newObjKey &&
 			areObjects &&
 			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
-			(options.cyclesFix ? !_stack.includes(objKey) : true)
+			(!options.cyclesFix || !_stack.includes(objKey))
 		) {
 			const nestedDiffs = diff(
 				objKey,
