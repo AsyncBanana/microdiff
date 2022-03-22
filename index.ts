@@ -1,4 +1,4 @@
-interface Difference {
+export interface Difference {
 	type: "CREATE" | "REMOVE" | "CHANGE";
 	path: (string | number)[];
 	value?: any;
