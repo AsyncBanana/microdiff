@@ -88,7 +88,7 @@ These benchmarks are currently only for one small object and a very large object
 
 # Contributing
 				 
-Thanks for helping the project out! Contributing is pretty simple. Fork the repository, clone it to your computer, and start programming! To compile the program, run `npm run build` (replace `npm` with `pnpm` or `yarn` if you are using one of those). This will create CommonJS and ESM modules in `/dist`. 
+Thanks for helping the project out! Contributing is pretty simple. Fork the repository (if you need more information on how to do this, check out [this GitHub guide](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)), clone it to your computer, and start programming! To compile the program, run `npm run build` (replace `npm` with `pnpm` or `yarn` if you are using one of those). This will create CommonJS and ESM modules in `/dist`. 
 
 To benchmark microdiff, you can run `npm run bench`. This will automatically build Microdiff and run a benchmarking program comparing microdiff to other common diffing libraries. 
 
