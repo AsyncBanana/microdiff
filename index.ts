@@ -1,9 +1,24 @@
-interface Difference {
-	type: "CREATE" | "REMOVE" | "CHANGE";
+interface DifferenceCreate {
+	type: "CREATE";
 	path: (string | number)[];
-	value?: any;
-	oldValue?: any;
+	value: any;
 }
+
+interface DifferenceRemove {
+	type: "REMOVE";
+	path: (string | number)[];
+	oldValue: any;
+}
+
+interface DifferenceChange {
+	type: "CHANGE";
+	path: (string | number)[];
+	value: any;
+	oldValue: any;
+}
+
+type Difference = DifferenceCreate | DifferenceRemove | DifferenceChange;
+
 interface Options {
 	cyclesFix: boolean;
 }
