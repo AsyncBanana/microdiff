@@ -1,23 +1,23 @@
-interface DifferenceCreate {
+export interface DifferenceCreate {
 	type: "CREATE";
 	path: (string | number)[];
 	value: any;
 }
 
-interface DifferenceRemove {
+export interface DifferenceRemove {
 	type: "REMOVE";
 	path: (string | number)[];
 	oldValue: any;
 }
 
-interface DifferenceChange {
+export interface DifferenceChange {
 	type: "CHANGE";
 	path: (string | number)[];
 	value: any;
 	oldValue: any;
 }
 
-type Difference = DifferenceCreate | DifferenceRemove | DifferenceChange;
+export type Difference = DifferenceCreate | DifferenceRemove | DifferenceChange;
 
 interface Options {
 	cyclesFix: boolean;
