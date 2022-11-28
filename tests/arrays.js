@@ -39,4 +39,19 @@ test("object in array in object", () => {
 	);
 });
 
+test("plain object in array in object", () => {
+	const src = Object.create(null)
+	const dist = Object.create({ a: 1 })
+	assert.equal(
+		diff([src], [dist]),
+		[
+			{
+				type: "CREATE",
+				path: [0, "a"],
+				value: 1,
+			},
+		]
+	);
+});
+
 test.run();
