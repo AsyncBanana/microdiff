@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module es2020  && npx prettier -w dist/* --loglevel warn",
-		"test": "npm run build && uvu tests",
+		"test": "npm run build && node --test ./tests/*",
 		"bench": "npm run build && node bench.js",
 		"prepublish": "npm run build"
 	},
@@ -31,8 +31,7 @@
 		"diff": "^5.1.0",
 		"picocolors": "^1.0.0",
 		"prettier": "^2.8.7",
-		"typescript": "^5.0.4",
-		"uvu": "^0.5.6"
+		"typescript": "^5.0.4"
 	},
 	"type": "module",
 	"repository": {

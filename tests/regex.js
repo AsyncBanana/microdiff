@@ -1,13 +1,13 @@
-import { test } from "uvu";
-import * as assert from "uvu/assert";
+import test from "node:test";
+import assert from "node:assert";
 import diff from "../dist/index.js";
 
 test("Handles equal regex", () => {
-	assert.equal(diff({ regex: /a/ }, { regex: /a/ }), []);
+	assert.deepStrictEqual(diff({ regex: /a/ }, { regex: /a/ }), []);
 });
 
 test("Handles unequal regex", () => {
-	assert.equal(diff({ regex: /a/ }, { regex: /b/ }), [
+	assert.deepStrictEqual(diff({ regex: /a/ }, { regex: /b/ }), [
 		{
 			type: "CHANGE",
 			path: ["regex"],
@@ -16,5 +16,3 @@ test("Handles unequal regex", () => {
 		},
 	]);
 });
-
-test.run();
