@@ -55,3 +55,20 @@ test("replace object with other value", () => {
 		]
 	);
 });
+
+test("equal null protype objects", () => {
+	assert.deepStrictEqual(diff(Object.create(null), Object.create(null)), []);
+});
+
+test("unequal null protype objects", () => {
+	const obj1 = Object.create(null);
+	const obj2 = Object.create(null);
+	obj2.test = true;
+	assert.deepStrictEqual(diff(obj1, obj2), [
+		{
+			type: "CREATE",
+			path: ["test"],
+			value: true,
+		},
+	]);
+});
