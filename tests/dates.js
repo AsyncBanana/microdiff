@@ -1,12 +1,14 @@
-import { test } from "uvu";
-import * as assert from "uvu/assert";
+import test, { describe } from "node:test";
+import assert from "node:assert";
 import diff from "../dist/index.js";
-
 test("Handles equal dates", () => {
-	assert.equal(diff({ date: new Date(1) }, { date: new Date(1) }), []);
+	assert.deepStrictEqual(
+		diff({ date: new Date(1) }, { date: new Date(1) }),
+		[]
+	);
 });
 test("Handles unequal dates", () => {
-	assert.equal(diff({ date: new Date(1) }, { date: new Date(2) }), [
+	assert.deepStrictEqual(diff({ date: new Date(1) }, { date: new Date(2) }), [
 		{
 			path: ["date"],
 			type: "CHANGE",
@@ -16,7 +18,7 @@ test("Handles unequal dates", () => {
 	]);
 });
 test("Handles value being a date and the other not", () => {
-	assert.equal(diff({ date: new Date(1) }, { date: "not date" }), [
+	assert.deepStrictEqual(diff({ date: new Date(1) }, { date: "not date" }), [
 		{
 			path: ["date"],
 			type: "CHANGE",
@@ -24,7 +26,7 @@ test("Handles value being a date and the other not", () => {
 			oldValue: new Date(1),
 		},
 	]);
-	assert.equal(diff({ date: "not date" }, { date: new Date(1) }), [
+	assert.deepStrictEqual(diff({ date: "not date" }, { date: new Date(1) }), [
 		{
 			path: ["date"],
 			type: "CHANGE",
@@ -33,5 +35,3 @@ test("Handles value being a date and the other not", () => {
 		},
 	]);
 });
-
-test.run();
