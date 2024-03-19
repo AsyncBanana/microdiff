@@ -72,16 +72,13 @@ export default function diff(
 			);
 		} else if (
 			objKey !== newObjKey &&
+			// treat NaN values as equivalent
+			!(Number.isNaN(objKey) && Number.isNaN(newObjKey)) &&
 			!(
-				// treat NaN values as equivalent
-				(
-					Number.isNaN(objKey) &&
-					Number.isNaN(newObjKey) &&
-					areCompatibleObjects &&
-					(isNaN(objKey)
-						? objKey + "" === newObjKey + ""
-						: +objKey === +newObjKey)
-				)
+				areCompatibleObjects &&
+				(isNaN(objKey)
+					? objKey + "" === newObjKey + ""
+					: +objKey === +newObjKey)
 			)
 		) {
 			diffs.push({
