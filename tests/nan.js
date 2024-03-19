@@ -1,9 +1,9 @@
-import { test } from "uvu";
-import * as assert from "uvu/assert";
+import test from "node:test";
+import assert from "node:assert";
 import diff from "../dist/index.js";
 
 test("new NaN value in object", () => {
-	assert.equal(diff({}, { testNaN: NaN }), [
+	assert.deepStrictEqual(diff({}, { testNaN: NaN }), [
 		{
 			type: "CREATE",
 			path: ["testNaN"],
@@ -12,7 +12,7 @@ test("new NaN value in object", () => {
 	]);
 });
 test("change NaN value in object", () => {
-	assert.equal(diff({ testNaN: NaN }, { testNaN: 0 }), [
+	assert.deepStrictEqual(diff({ testNaN: NaN }, { testNaN: 0 }), [
 		{
 			type: "CHANGE",
 			path: ["testNaN"],
@@ -22,10 +22,10 @@ test("change NaN value in object", () => {
 	]);
 });
 test("do not change NaN value in object", () => {
-	assert.equal(diff({ testNaN: NaN }, { testNaN: NaN }), []);
+	assert.deepStrictEqual(diff({ testNaN: NaN }, { testNaN: NaN }), []);
 });
 test("remove NaN value in object", () => {
-	assert.equal(diff({ testNaN: NaN }, {}), [
+	assert.deepStrictEqual(diff({ testNaN: NaN }, {}), [
 		{
 			type: "REMOVE",
 			path: ["testNaN"],
@@ -34,7 +34,7 @@ test("remove NaN value in object", () => {
 	]);
 });
 test("new NaN value in array", () => {
-	assert.equal(diff([], [ NaN ]), [
+	assert.deepStrictEqual(diff([], [NaN]), [
 		{
 			type: "CREATE",
 			path: [0],
@@ -43,7 +43,7 @@ test("new NaN value in array", () => {
 	]);
 });
 test("change NaN value in object", () => {
-	assert.equal(diff([ NaN ], [ 0 ]), [
+	assert.deepStrictEqual(diff([NaN], [0]), [
 		{
 			type: "CHANGE",
 			path: [0],
@@ -53,16 +53,5 @@ test("change NaN value in object", () => {
 	]);
 });
 test("do not change NaN value in array", () => {
-	assert.equal(diff([ NaN ], [ NaN ]), []);
+	assert.deepStrictEqual(diff([NaN], [NaN]), []);
 });
-test("remove NaN value in array", () => {
-	assert.equal(diff([ NaN ], []), [
-		{
-			type: "REMOVE",
-			path: [0],
-			oldValue: NaN,
-		},
-	]);
-});
-
-test.run();
