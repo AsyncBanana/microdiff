@@ -73,6 +73,9 @@ export default function diff(
 		} else if (
 			objKey !== newObjKey &&
 			!(
+				// treat NaN values as equivalent
+				Number.isNaN(objKey) &&
+				tNumber.isNaN(newObjKey) &&
 				areCompatibleObjects &&
 				(isNaN(objKey)
 					? objKey + "" === newObjKey + ""
