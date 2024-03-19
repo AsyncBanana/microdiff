@@ -74,12 +74,14 @@ export default function diff(
 			objKey !== newObjKey &&
 			!(
 				// treat NaN values as equivalent
-				Number.isNaN(objKey) &&
-				tNumber.isNaN(newObjKey) &&
-				areCompatibleObjects &&
-				(isNaN(objKey)
-					? objKey + "" === newObjKey + ""
-					: +objKey === +newObjKey)
+				(
+					Number.isNaN(objKey) &&
+					Number.isNaN(newObjKey) &&
+					areCompatibleObjects &&
+					(isNaN(objKey)
+						? objKey + "" === newObjKey + ""
+						: +objKey === +newObjKey)
+				)
 			)
 		) {
 			diffs.push({
