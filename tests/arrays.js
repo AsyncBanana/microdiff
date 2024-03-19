@@ -21,7 +21,7 @@ test("nested array", () => {
 				path: [1, 1],
 				value: "test2",
 			},
-		]
+		],
 	);
 });
 
@@ -29,7 +29,7 @@ test("object in array in object", () => {
 	assert.deepStrictEqual(
 		diff(
 			{ test: ["test", { test: true }] },
-			{ test: ["test", { test: false }] }
+			{ test: ["test", { test: false }] },
 		),
 		[
 			{
@@ -38,6 +38,12 @@ test("object in array in object", () => {
 				value: false,
 				oldValue: true,
 			},
-		]
+		],
 	);
+});
+
+test("array to object", () => {
+	assert.deepStrictEqual(diff({ data: [] }, { data: { val: "test" } }), [
+		{ type: "CHANGE", path: ["data"], value: { val: "test" }, oldValue: [] },
+	]);
 });

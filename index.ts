@@ -29,7 +29,7 @@ export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
-	_stack: Record<string, any>[] = []
+	_stack: Record<string, any>[] = [],
 ): Difference[] {
 	let diffs: Difference[] = [];
 	const isObjArray = Array.isArray(obj);
@@ -46,12 +46,14 @@ export default function diff(
 			continue;
 		}
 		const newObjKey = newObj[key];
-		const areObjects =
-			typeof objKey === "object" && typeof newObjKey === "object";
+		const areCompatibleObjects =
+			typeof objKey === "object" &&
+			typeof newObjKey === "object" &&
+			Array.isArray(objKey) === Array.isArray(newObjKey);
 		if (
 			objKey &&
 			newObjKey &&
-			areObjects &&
+			areCompatibleObjects &&
 			!richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] &&
 			(!options.cyclesFix || !_stack.includes(objKey))
 		) {
@@ -59,19 +61,19 @@ export default function diff(
 				objKey,
 				newObjKey,
 				options,
-				options.cyclesFix ? _stack.concat([objKey]) : []
+				options.cyclesFix ? _stack.concat([objKey]) : [],
 			);
 			diffs.push.apply(
 				diffs,
 				nestedDiffs.map((difference) => {
 					difference.path.unshift(path);
 					return difference;
-				})
+				}),
 			);
 		} else if (
 			objKey !== newObjKey &&
 			!(
-				areObjects &&
+				areCompatibleObjects &&
 				(isNaN(objKey)
 					? objKey + "" === newObjKey + ""
 					: +objKey === +newObjKey)
