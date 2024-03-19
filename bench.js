@@ -1,5 +1,5 @@
 import deepDiff from "deep-diff";
-import deepObjectDiff from "deep-object-diff";
+import { detailedDiff } from "deep-object-diff";
 import { diffJson } from "diff";
 import microdiff from "./dist/index.js";
 import { hrtime } from "node:process";
@@ -9,7 +9,7 @@ const characters = "abcdefghijklmnopqrstuvwxyz1234567890".split("");
 async function benchmark(name, obj, newObj, exclude = []) {
 	const benchmarks = {
 		"deep-diff": () => deepDiff.diff(obj, newObj),
-		"deep-object-diff": () => deepObjectDiff.detailedDiff(obj, newObj),
+		"deep-object-diff": () => detailedDiff(obj, newObj),
 		jsdiff: () => diffJson(obj, newObj),
 		microdiff: () => microdiff(obj, newObj),
 	};
@@ -47,7 +47,7 @@ async function benchmark(name, obj, newObj, exclude = []) {
 		colors.bold(colors.green(`Benchmarks: ${name}\n`)) + output.join("\n")
 	);
 }
-
+console.log(colors.bold("Starting Benchmark"));
 benchmark(
 	"Small object (baseline)",
 	{

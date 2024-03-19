@@ -85,3 +85,12 @@ microdiff: 75934ns - Fastest
 ```
 
 These benchmarks are currently only for one small object and a very large object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
+
+# Contributing
+				 
+Thanks for helping the project out! Contributing is pretty simple. Fork the repository (if you need more information on how to do this, check out [this GitHub guide](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)), clone it to your computer, and start programming! To compile the program, run `npm run build` (replace `npm` with `pnpm` or `yarn` if you are using one of those). This will create CommonJS and ESM modules in `/dist`. 
+
+To benchmark microdiff, you can run `npm run bench`. This will automatically build Microdiff and run a benchmarking program comparing microdiff to other common diffing libraries. 
+
+Finally, Microdiff has an extensive test suite which you should take advantage of. To make sure everything is working correctly, you can run `npm run test`. `npm run test` builds the project and then runs the entire test suite on the new version. If you are fixing a bug, be sure to add a test for that.
+Also, make sure you read the [Code of Conduct](https://github.com/AsyncBanana/microdiff/blob/master/CODE_OF_CONDUCT.md) before contributing.

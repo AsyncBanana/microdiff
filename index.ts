@@ -1,9 +1,24 @@
-interface Difference {
-	type: "CREATE" | "REMOVE" | "CHANGE";
+export interface DifferenceCreate {
+	type: "CREATE";
 	path: (string | number)[];
-	value?: any;
-	oldValue?: any;
+	value: any;
 }
+
+export interface DifferenceRemove {
+	type: "REMOVE";
+	path: (string | number)[];
+	oldValue: any;
+}
+
+export interface DifferenceChange {
+	type: "CHANGE";
+	path: (string | number)[];
+	value: any;
+	oldValue: any;
+}
+
+export type Difference = DifferenceCreate | DifferenceRemove | DifferenceChange;
+
 interface Options {
 	cyclesFix: boolean;
 }
@@ -14,7 +29,7 @@ export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
-	_stack: Record<string, any>[] = []
+	_stack: Record<string, any>[] = [],
 ): Difference[] {
 	let diffs: Difference[] = [];
 	const isObjArray = Array.isArray(obj);
@@ -31,27 +46,29 @@ export default function diff(
 			continue;
 		}
 		const newObjKey = newObj[key];
-		const areObjects =
-			typeof objKey === "object" && typeof newObjKey === "object";
+		const areCompatibleObjects =
+			typeof objKey === "object" &&
+			typeof newObjKey === "object" &&
+			Array.isArray(objKey) === Array.isArray(newObjKey);
 		if (
 			objKey &&
 			newObjKey &&
-			areObjects &&
-			!richTypes[Object.getPrototypeOf(objKey).constructor.name] &&
-			(options.cyclesFix ? !_stack.includes(objKey) : true)
+			areCompatibleObjects &&
+			!richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] &&
+			(!options.cyclesFix || !_stack.includes(objKey))
 		) {
 			const nestedDiffs = diff(
 				objKey,
 				newObjKey,
 				options,
-				options.cyclesFix ? _stack.concat([objKey]) : []
+				options.cyclesFix ? _stack.concat([objKey]) : [],
 			);
 			diffs.push.apply(
 				diffs,
 				nestedDiffs.map((difference) => {
 					difference.path.unshift(path);
 					return difference;
-				})
+				}),
 			);
 		} else if (
 			objKey !== newObjKey &&
@@ -61,7 +78,7 @@ export default function diff(
 				typeof newObjKey === "number" && isNaN(newObjKey)
 			) &&
 			!(
-				areObjects &&
+				areCompatibleObjects &&
 				(isNaN(objKey)
 					? objKey + "" === newObjKey + ""
 					: +objKey === +newObjKey)
