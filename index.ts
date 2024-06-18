@@ -25,6 +25,18 @@ interface Options {
 
 const richTypes = { Date: true, RegExp: true, String: true, Number: true };
 
+function isObject(value: any): value is object {
+	return value !== null && typeof value === "object";
+}
+
+function isArray(value: any): value is any[] {
+	return Array.isArray(value);
+}
+
+function isRichType(value: any): boolean {
+	return richTypes[Object.getPrototypeOf(value)?.constructor?.name] ?? false;
+}
+
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
@@ -32,7 +44,7 @@ export default function diff(
 	_stack: Record<string, any>[] = [],
 ): Difference[] {
 	let diffs: Difference[] = [];
-	const isObjArray = Array.isArray(obj);
+	const isObjArray = isArray(obj);
 
 	for (const key in obj) {
 		const objKey = obj[key];
@@ -47,14 +59,14 @@ export default function diff(
 		}
 		const newObjKey = newObj[key];
 		const areCompatibleObjects =
-			typeof objKey === "object" &&
-			typeof newObjKey === "object" &&
-			Array.isArray(objKey) === Array.isArray(newObjKey);
+			isObject(objKey) &&
+			isObject(newObjKey) &&
+			isArray(objKey) === isArray(newObjKey);
 		if (
 			objKey &&
 			newObjKey &&
 			areCompatibleObjects &&
-			!richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] &&
+			!isRichType(objKey) &&
 			(!options.cyclesFix || !_stack.includes(objKey))
 		) {
 			const nestedDiffs = diff(
@@ -66,7 +78,7 @@ export default function diff(
 			diffs.push.apply(
 				diffs,
 				nestedDiffs.map((difference) => {
-					difference.path.unshift(path);
+					difference.path = [path, ...difference.path];
 					return difference;
 				}),
 			);
@@ -90,7 +102,7 @@ export default function diff(
 		}
 	}
 
-	const isNewObjArray = Array.isArray(newObj);
+	const isNewObjArray = isArray(newObj);
 	for (const key in newObj) {
 		if (!(key in obj)) {
 			diffs.push({
