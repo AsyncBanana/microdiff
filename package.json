@@ -4,14 +4,12 @@
 	"description": "Small, fast, zero dependency deep object and array comparison",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"exports": {
 		"import": "./dist/index.js",
-		"require": "./dist/index.cjs",
-		"default": "./dist/index.js"
+		"require": "./dist/index.cjs"
 	},
 	"scripts": {
-		"build": "tsc --module CommonJS && cd dist && mv \"index.js\" \"index.cjs\" && cd ../ && tsc --module es2020  && npx prettier -w dist/*",
+		"build": "tsc --module CommonJS && mv \"dist/index.js\" \"dist/index.cjs\" && mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && npx prettier -w dist/*",
 		"test": "npm run build && node --test ./tests/*",
 		"bench": "npm run build && node bench.js",
 		"prepublish": "npm run build"
