@@ -28,13 +28,13 @@ test("nested array", () => {
 test("object in array in object", () => {
 	assert.deepStrictEqual(
 		diff(
-			{ test: ["test", { test: true }] },
-			{ test: ["test", { test: false }] },
+			{ test: ["test", { test2: true }] },
+			{ test: ["test", { test2: false }] },
 		),
 		[
 			{
 				type: "CHANGE",
-				path: ["test", 1, "test"],
+				path: ["test", 1, "test2"],
 				value: false,
 				oldValue: true,
 			},
