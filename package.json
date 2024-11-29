@@ -11,7 +11,7 @@
 	"scripts": {
 		"build": "tsc --module CommonJS && mv \"dist/index.js\" \"dist/index.cjs\" && mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && npx prettier -w dist/*",
 		"test": "npm run build && node --test ./tests/*",
-		"bench": "npm run build && node bench.js",
+		"bench": "npm run build && node --expose-gc bench.js",
 		"prepublish": "npm run build"
 	},
 	"keywords": [
@@ -26,10 +26,11 @@
 	"devDependencies": {
 		"deep-diff": "^1.0.2",
 		"deep-object-diff": "^1.1.9",
-		"diff": "^5.2.0",
-		"picocolors": "^1.0.0",
-		"prettier": "^3.2.5",
-		"typescript": "^5.4.2"
+		"diff": "^7.0.0",
+		"mitata": "^1.0.19",
+		"picocolors": "^1.1.1",
+		"prettier": "^3.4.1",
+		"typescript": "^5.7.2"
 	},
 	"type": "module",
 	"repository": {

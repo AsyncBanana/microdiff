@@ -1,82 +1,62 @@
-import deepDiff from "deep-diff";
 import { detailedDiff } from "deep-object-diff";
-import { diffJson } from "diff";
+import { run, bench } from "mitata";
 import microdiff from "./dist/index.js";
-import { hrtime } from "node:process";
+import { diffJson } from "diff";
+import deepDiff from "deep-diff";
 import colors from "picocolors";
-const characters = "abcdefghijklmnopqrstuvwxyz1234567890".split("");
+import { readdirSync } from "node:fs";
+import { resolve } from "node:path";
+import { argv } from "node:process";
+const benchmarkType = argv.includes("--theoretical")
+	? "theoretical"
+	: "applied";
+const avgs = [];
+const benchmarks = readdirSync(resolve("./benchmarks", benchmarkType)).filter(
+	(file) => !file.startsWith("_"),
+);
+console.log(`Running ${benchmarks.length} ${benchmarkType} benchmarks`);
+for (const file of benchmarks) {
+	const benchmark = await import(resolve("benchmarks", benchmarkType, file));
+	const obj = benchmark.original;
+	const newObj = benchmark.changed;
 
-async function benchmark(name, obj, newObj, exclude = []) {
-	const benchmarks = {
-		"deep-diff": () => deepDiff.diff(obj, newObj),
-		"deep-object-diff": () => detailedDiff(obj, newObj),
-		jsdiff: () => diffJson(obj, newObj),
-		microdiff: () => microdiff(obj, newObj),
-	};
-	let times = {};
-	for (let benchmark in benchmarks) {
-		if (exclude.includes(benchmark)) {
-			continue;
-		}
-		times[benchmark] = [];
-		for (let i = 1; i < 10000; i++) {
-			let time = hrtime();
-			benchmarks[benchmark]();
-			times[benchmark].push(hrtime(time)[1]);
-		}
-		times[benchmark] =
-			times[benchmark].reduce((pv, nv) => pv + nv) / times[benchmark].length;
-	}
-	let output = [];
-	let fastest = "";
-	for (let time in times) {
-		if (!fastest || times[time] < times[fastest]) {
-			fastest = time;
-		}
-	}
-	for (let time in times) {
-		output.push(
-			`${time}: ${Math.round(times[time])}ns - ${
-				fastest === time
-					? colors.bold(colors.green("Fastest"))
-					: `${Math.round((times[time] / times[fastest] - 1) * 100)}% slower`
-			}`
-		);
-	}
-	console.log(
-		colors.bold(colors.green(`Benchmarks: ${name}\n`)) + output.join("\n")
+	bench("microdiff (no cycles)", () =>
+		microdiff(obj, newObj, { cyclesFix: false }),
+	);
+	bench("microdiff", () => microdiff(obj, newObj));
+	bench("deep-diff", () => deepDiff.diff(obj, newObj));
+	bench("deep-object-diff", () => detailedDiff(obj, newObj));
+	bench("jsDiff", () => diffJson(obj, newObj));
+
+	console.log(colors.green(colors.bold(benchmark.name)));
+	const res = await run();
+	const baselineAvg = res.benchmarks.find(
+		(subres) => subres.alias == "microdiff (no cycles)",
+	).runs[0].stats.avg;
+	avgs.push(
+		res.benchmarks.map((subres) => ({
+			alias: subres.alias,
+			avg: subres.runs[0].stats.avg / baselineAvg,
+		})),
 	);
 }
-console.log(colors.bold("Starting Benchmark"));
-benchmark(
-	"Small object (baseline)",
-	{
-		name: "Testing",
-		propertyTwo: "Still testing...",
-	},
-	{
-		name: "TestingChanged",
-		propertyThree: "Still testing...",
+const mean = {};
+for (const ben of avgs) {
+	for (const algo of ben) {
+		if (!mean[algo.alias]) {
+			mean[algo.alias] = algo.avg;
+		} else mean[algo.alias] *= algo.avg;
 	}
+}
+console.log(
+	colors.bold(
+		colors.green(
+			"Geometric mean of time per operation relative to Microdiff (no cycles) (100%==equal time, lower is better)",
+		),
+	),
 );
-let largeObj = {};
-let i = 0;
-while (i < 300) {
-	let randomString = "";
-	for (let characterCount = 0; characterCount < 5; characterCount++) {
-		randomString += characters[Math.round(Math.random() * characters.length)];
-	}
-	if (!largeObj[randomString]) {
-		largeObj[randomString] = Math.random() * 100;
-		i++;
-	}
+for (const algo in mean) {
+	console.log(
+		`${algo}: ${Math.round(Math.pow(mean[algo], 1 / benchmarks.length) * 100)}%`,
+	);
 }
-let newLargeObj = {};
-for (let randomProperty in largeObj) {
-	if (Math.random() > 0.95) {
-		newLargeObj[randomProperty] = Math.random() * 100;
-	} else if (!Math.random() < 0.975) {
-		newLargeObj[randomProperty] = largeObj[randomProperty];
-	}
-}
-benchmark("Large Object (300 properties)", largeObj, newLargeObj);

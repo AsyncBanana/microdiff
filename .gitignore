@@ -1,4 +1,5 @@
 pnpm-lock.yaml
+bun.lockb
 package-lock.json
 node_modules
 dist
