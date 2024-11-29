@@ -57,15 +57,14 @@ export default function diff(
 			!richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] &&
 			(!options.cyclesFix || !_stack.includes(objKey))
 		) {
-			const nestedDiffs = diff(
-				objKey,
-				newObjKey,
-				options,
-				options.cyclesFix ? _stack.concat([objKey]) : [],
-			);
 			diffs.push.apply(
 				diffs,
-				nestedDiffs.map((difference) => {
+				diff(
+					objKey,
+					newObjKey,
+					options,
+					options.cyclesFix ? _stack.concat([objKey]) : [],
+				).map((difference) => {
 					difference.path.unshift(path);
 					return difference;
 				}),
