@@ -2,8 +2,7 @@
 
 ![Microdiff Logo](https://raw.githubusercontent.com/AsyncBanana/microdiff/master/Logo.svg)
 
-Microdiff is a tiny (currently <1kb), fast, zero dependency object and array comparison library. It is significantly faster than most other deep comparison libraries, and has full TypeScript support.
-
+Microdiff is a tiny (<1kb), fast, zero dependency object and array comparison library. It is significantly faster than most other deep comparison libraries, and has full TypeScript support.
 
 > 💡 I recommend reading this blog post:
 >
@@ -17,7 +16,7 @@ Microdiff is a tiny (currently <1kb), fast, zero dependency object and array com
 
 - 🚀 More than double the speed of other object diff libraries
 - 📦 Extremely lightweight, <1kb minified
-- 🌎 Supports Deno, Node, the web, and even service workers. Also comes with built-in Typescript types
+- 🌎 Supports Deno, Node, Bun, the web, and even service workers. Also comes with built-in Typescript types
 - 🔰 Very easy to use, having just a single `diff()` function
 - 📅 Full support for objects like `new Date()` and `new RegExp()`
 
@@ -71,26 +70,23 @@ diff(obj1, obj2, { cyclesFix: false });
 # Benchmarks
 
 ```
-Benchmarks: Small object
-deep-diff: 17929ns - 409% slower
-deep-object-diff: 10763ns - 206% slower
-jsdiff: 79700ns - 2164% slower
-microdiff: 3520ns - Fastest
-
-Benchmarks: Large Object
-deep-diff: 272887ns - 259% slower
-deep-object-diff: 160019ns - 111% slower
-jsdiff: 1688294ns - 2123% slower
-microdiff: 75934ns - Fastest
+Geometric mean of time per operation relative to Microdiff (no cycles) (100%==equal time, lower is better)
+microdiff (no cycles): 100%
+microdiff: 149%
+deep-diff: 197%
+deep-object-diff: 288%
+jsDiff: 1565%
 ```
 
-These benchmarks are currently only for one small object and a very large object, so they might not be accurate. I will be working on creating benchmarks with more varying types.
+These results are from a suite of benchmarks matching real world use cases of multiple open-source repos using various diffing algorithm, running under Node 22.12.0 on a Ryzen 7950x clocked at ~4.30 GHz. The benchmarks are run through [mitata](https://github.com/evanwashere/mitata) to minimize random variation and time most accurately. You can view the full benchmark code in [bench.js](https://github.com/AsyncBanana/microdiff/blob/master/bench.js) and the benchmarks themselves at [benchmarks/applied](https://github.com/AsyncBanana/microdiff/tree/master/benchmarks/applied).
+
+Of course, [these benchmarks should be taken with a grain of salt](https://byteofdev.com/posts/javascript-benchmarking-mess/) due to the inherent errors present in benchmarking JavaScript, but if you want to run them on your own computer in your own runtime/setup, run `bench.js`.
 
 # Contributing
-				 
-Thanks for helping the project out! Contributing is pretty simple. Fork the repository (if you need more information on how to do this, check out [this GitHub guide](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)), clone it to your computer, and start programming! To compile the program, run `npm run build` (replace `npm` with `pnpm` or `yarn` if you are using one of those). This will create CommonJS and ESM modules in `/dist`. 
 
-To benchmark microdiff, you can run `npm run bench`. This will automatically build Microdiff and run a benchmarking program comparing microdiff to other common diffing libraries. 
+Thanks for helping the project out! Contributing is pretty simple. Fork the repository (if you need more information on how to do this, check out [this GitHub guide](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)), clone it to your computer, and start programming! To compile the program, run `npm run build` (replace `npm` with `pnpm` or `yarn` if you are using one of those). This will create CommonJS and ESM modules in `/dist`.
+
+To benchmark microdiff, you can run `npm run bench`. This will automatically build Microdiff and run a benchmarking program comparing microdiff to other common diffing libraries.
 
 Finally, Microdiff has an extensive test suite which you should take advantage of. To make sure everything is working correctly, you can run `npm run test`. `npm run test` builds the project and then runs the entire test suite on the new version. If you are fixing a bug, be sure to add a test for that.
 Also, make sure you read the [Code of Conduct](https://github.com/AsyncBanana/microdiff/blob/master/CODE_OF_CONDUCT.md) before contributing.
