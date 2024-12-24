@@ -1,5 +1,5 @@
 // Inspired by https://github.com/vanilla-extract-css/vanilla-extract/blob/master/site/src/themes.css.ts (Vanilla Extract uses deep-object-diff to compare theme)
-export const name = "Vanill Extract Theme";
+export const name = "Vanilla Extract Theme";
 export const original = {
 	fonts: {
 		brand: 'Shrikhand, "Helvetica Neue", HelveticaNeue, Helvetica, sans-serif',

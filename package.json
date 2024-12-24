@@ -9,7 +9,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"scripts": {
-		"build": "tsc --module CommonJS && mv \"dist/index.js\" \"dist/index.cjs\" && mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && npx prettier -w dist/*",
+		"build": "tsc --module CommonJS && mv \"dist/index.js\" \"dist/index.cjs\" && mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && prettier -w dist/*",
 		"test": "npm run build && node --test ./tests/*",
 		"bench": "npm run build && node --expose-gc bench.js",
 		"prepublish": "npm run build"
