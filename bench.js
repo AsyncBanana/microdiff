@@ -7,6 +7,7 @@ import colors from "picocolors";
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { argv } from "node:process";
+import { pathToFileURL } from "node:url";
 const benchmarkType = argv.includes("--theoretical")
 	? "theoretical"
 	: "applied";
@@ -16,7 +17,7 @@ const benchmarks = readdirSync(resolve("./benchmarks", benchmarkType)).filter(
 );
 console.log(`Running ${benchmarks.length} ${benchmarkType} benchmarks`);
 for (const file of benchmarks) {
-	const benchmark = await import(resolve("benchmarks", benchmarkType, file));
+	const benchmark = await import(pathToFileURL(resolve("benchmarks", benchmarkType, file)));
 	const obj = benchmark.original;
 	const newObj = benchmark.changed;
 

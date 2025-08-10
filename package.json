@@ -9,7 +9,7 @@
 		"require": "./dist/index.cjs"
 	},
 	"scripts": {
-		"build": "tsc --module CommonJS && mv \"dist/index.js\" \"dist/index.cjs\" && mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && prettier -w dist/*",
+		"build": "tsc --module CommonJS && shx mv \"dist/index.js\" \"dist/index.cjs\" && shx mv \"dist/index.d.ts\" \"dist/index.d.cts\" && tsc --module es2020 && prettier -w dist/*",
 		"test": "npm run build && node --test ./tests/*",
 		"bench": "npm run build && node --expose-gc bench.js",
 		"prepublish": "npm run build"
@@ -30,6 +30,7 @@
 		"mitata": "^1.0.19",
 		"picocolors": "^1.1.1",
 		"prettier": "^3.4.1",
+		"shx": "^0.4.0",
 		"typescript": "^5.7.2"
 	},
 	"type": "module",
