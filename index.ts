@@ -21,6 +21,7 @@ export type Difference = DifferenceCreate | DifferenceRemove | DifferenceChange;
 
 interface Options {
 	cyclesFix: boolean;
+	shallow: boolean;
 }
 
 const richTypes = { Date: true, RegExp: true, String: true, Number: true };
@@ -28,7 +29,7 @@ const richTypes = { Date: true, RegExp: true, String: true, Number: true };
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
-	options: Partial<Options> = { cyclesFix: true },
+	options: Partial<Options> = { cyclesFix: true, shallow: false },
 	_stack: Record<string, any>[] = [],
 ): Difference[] {
 	let diffs: Difference[] = [];
@@ -38,6 +39,10 @@ export default function diff(
 		const objKey = obj[key];
 		const path = isObjArray ? +key : key;
 		if (!(key in newObj)) {
+			// En modo shallow, ignorar propiedades que son objetos/arrays
+			if (options.shallow && typeof objKey === "object" && objKey !== null) {
+				continue;
+			}
 			diffs.push({
 				type: "REMOVE",
 				path: [path],
@@ -50,6 +55,12 @@ export default function diff(
 			typeof objKey === "object" &&
 			typeof newObjKey === "object" &&
 			Array.isArray(objKey) === Array.isArray(newObjKey);
+
+		// En modo shallow, ignorar completamente propiedades que son objetos/arrays
+		if (options.shallow && typeof objKey === "object" && objKey !== null) {
+			continue;
+		}
+
 		if (
 			objKey &&
 			newObjKey &&
@@ -92,6 +103,11 @@ export default function diff(
 	const isNewObjArray = Array.isArray(newObj);
 	for (const key in newObj) {
 		if (!(key in obj)) {
+			const newObjKey = newObj[key];
+			// En modo shallow, ignorar propiedades que son objetos/arrays
+			if (options.shallow && typeof newObjKey === "object" && newObjKey !== null) {
+				continue;
+			}
 			diffs.push({
 				type: "CREATE",
 				path: [isNewObjArray ? +key : key],
