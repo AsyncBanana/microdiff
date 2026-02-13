@@ -12,6 +12,8 @@ Microdiff is a tiny (<1kb), fast, zero dependency object and array comparison li
 
 </div>
 
+![Demo](assets/demo.gif)
+
 # Features
 
 - 🚀 More than double the speed of other object diff libraries
