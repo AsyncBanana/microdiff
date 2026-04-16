@@ -69,18 +69,20 @@ export default function diff(
 			(!options.cyclesFix || !_stack.includes(value))
 		) {
 			// Recurse into objects and arrays
-			diffs.push.apply(
-				diffs,
-				diff(
-					value,
-					newValue,
-					options,
-					options.cyclesFix ? _stack.concat([value]) : [],
-				).map((difference) => {
-					difference.path.unshift(path);
-					return difference;
-				}),
-			);
+			if (options.cyclesFix) {
+				_stack.push(value);
+			}
+
+			const subDiffs = diff(value, newValue, options, _stack);
+
+			if (options.cyclesFix) {
+				_stack.pop();
+			}
+
+			for (const subDiff of subDiffs) {
+				subDiff.path.unshift(path);
+				diffs.push(subDiff);
+			}
 		} else if (
 			!(
 				Object.is(value, newValue) /* treat nulls as equivalent */ ||
