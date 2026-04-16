@@ -75,9 +75,7 @@ export default function diff(
 			!(Number.isNaN(value) && Number.isNaN(newValue)) &&
 			!(
 				areCompatibleObjects &&
-				(isNaN(value)
-					? value + "" === newValue + ""
-					: +value === +newValue)
+				(isNaN(value) ? value + "" === newValue + "" : +value === +newValue)
 			)
 		) {
 			diffs.push({
