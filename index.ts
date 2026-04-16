@@ -41,7 +41,7 @@ export default function diff(
 			diffs.push({
 				type: "REMOVE",
 				path: [path],
-				oldValue: obj[key],
+				oldValue: value,
 			});
 			continue;
 		}
