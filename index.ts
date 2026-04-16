@@ -62,7 +62,12 @@ export default function diff(
 			typeof newValue === "object" &&
 			Array.isArray(value) === Array.isArray(newValue);
 
-		const objConstructor = Object.getPrototypeOf(value)?.constructor?.name;
+		// Only compute for non-null objects — primitives and null skip this
+		// entirely since Object.getPrototypeOf is expensive to call on every key
+		const objConstructor =
+			areCompatibleObjects && value
+				? Object.getPrototypeOf(value)?.constructor?.name
+			: undefined;
 
 		if (
 			value &&
