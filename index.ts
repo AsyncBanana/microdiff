@@ -40,7 +40,7 @@ export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
-	_stack: Record<string, any>[] = [],
+	_stack: Set<Record<string, any>> = new Set(),
 ): Difference[] {
 	let diffs: Difference[] = [];
 	const isObjArray = Array.isArray(obj);
@@ -75,21 +75,23 @@ export default function diff(
 			areCompatibleObjects &&
 			!richTypes[objConstructor] &&
 			!temporalTypes[objConstructor] &&
-			(!options.cyclesFix || !_stack.includes(value))
+			(!options.cyclesFix || !_stack.has(value))
 		) {
 			// Recurse into objects and arrays
-			diffs.push.apply(
-				diffs,
-				diff(
-					value,
-					newValue,
-					options,
-					options.cyclesFix ? _stack.concat([value]) : [],
-				).map((difference) => {
-					difference.path.unshift(path);
-					return difference;
-				}),
-			);
+			if (options.cyclesFix) {
+				_stack.add(value);
+			}
+
+			const subDiffs = diff(value, newValue, options, _stack);
+
+			if (options.cyclesFix) {
+				_stack.delete(value);
+			}
+
+			for (const subDiff of subDiffs) {
+				subDiff.path.unshift(path);
+				diffs.push(subDiff);
+			}
 		} else if (value === newValue) {
 			// Non-object values that are strictly equal are not differences
 			continue;
