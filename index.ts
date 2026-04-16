@@ -25,6 +25,17 @@ interface Options {
 
 const richTypes = { Date: true, RegExp: true, String: true, Number: true };
 
+const temporalTypes = {
+	Instant: true,
+	PlainDate: true,
+	PlainTime: true,
+	PlainDateTime: true,
+	ZonedDateTime: true,
+	Duration: true,
+	PlainYearMonth: true,
+	PlainMonthDay: true,
+};
+
 export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
@@ -50,13 +61,18 @@ export default function diff(
 			typeof value === "object" &&
 			typeof newValue === "object" &&
 			Array.isArray(value) === Array.isArray(newValue);
+
+		const objConstructor = Object.getPrototypeOf(value)?.constructor?.name;
+
 		if (
 			value &&
 			newValue &&
 			areCompatibleObjects &&
-			!richTypes[Object.getPrototypeOf(value)?.constructor?.name] &&
+			!richTypes[objConstructor] &&
+			!temporalTypes[objConstructor] &&
 			(!options.cyclesFix || !_stack.includes(value))
 		) {
+			// Recurse into objects and arrays
 			diffs.push.apply(
 				diffs,
 				diff(
@@ -69,15 +85,30 @@ export default function diff(
 					return difference;
 				}),
 			);
-		} else if (
-			value !== newValue &&
+		} else if (value === newValue) {
+			// Non-object values that are strictly equal are not differences
+			continue;
+		} else if (Number.isNaN(value) && Number.isNaN(newValue)) {
 			// treat NaN values as equivalent
-			!(Number.isNaN(value) && Number.isNaN(newValue)) &&
-			!(
-				areCompatibleObjects &&
-				(isNaN(value) ? value + "" === newValue + "" : +value === +newValue)
-			)
+			continue;
+		} else if (
+			// Temporal types are always objects, and always compared by their string representation
+			// This is different from the Rich objects which can coerce using valueOf or toString
+			// Temporal types purposefully throw on valueOf but all provide a reliable toString for comparison
+			areCompatibleObjects &&
+			temporalTypes[objConstructor] &&
+			String(value) === String(newValue)
 		) {
+			continue;
+		} else if (
+			// These are the Rich Types that can be compared by coercing to primitive values
+			// but only if they are the same type of object
+			areCompatibleObjects &&
+			richTypes[objConstructor] &&
+			(isNaN(value) ? value + "" === newValue + "" : +value === +newValue)
+		) {
+			continue;
+		} else {
 			diffs.push({
 				path: [path],
 				type: "CHANGE",
