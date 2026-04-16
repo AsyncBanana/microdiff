@@ -35,7 +35,7 @@ export default function diff(
 	const isObjArray = Array.isArray(obj);
 
 	for (const key in obj) {
-		const objKey = obj[key];
+		const value = obj[key];
 		const path = isObjArray ? +key : key;
 		if (!(key in newObj)) {
 			diffs.push({
@@ -45,46 +45,46 @@ export default function diff(
 			});
 			continue;
 		}
-		const newObjKey = newObj[key];
+		const newValue = newObj[key];
 		const areCompatibleObjects =
-			typeof objKey === "object" &&
-			typeof newObjKey === "object" &&
-			Array.isArray(objKey) === Array.isArray(newObjKey);
+			typeof value === "object" &&
+			typeof newValue === "object" &&
+			Array.isArray(value) === Array.isArray(newValue);
 		if (
-			objKey &&
-			newObjKey &&
+			value &&
+			newValue &&
 			areCompatibleObjects &&
-			!richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] &&
-			(!options.cyclesFix || !_stack.includes(objKey))
+			!richTypes[Object.getPrototypeOf(value)?.constructor?.name] &&
+			(!options.cyclesFix || !_stack.includes(value))
 		) {
 			diffs.push.apply(
 				diffs,
 				diff(
-					objKey,
-					newObjKey,
+					value,
+					newValue,
 					options,
-					options.cyclesFix ? _stack.concat([objKey]) : [],
+					options.cyclesFix ? _stack.concat([value]) : [],
 				).map((difference) => {
 					difference.path.unshift(path);
 					return difference;
 				}),
 			);
 		} else if (
-			objKey !== newObjKey &&
+			value !== newValue &&
 			// treat NaN values as equivalent
-			!(Number.isNaN(objKey) && Number.isNaN(newObjKey)) &&
+			!(Number.isNaN(value) && Number.isNaN(newValue)) &&
 			!(
 				areCompatibleObjects &&
-				(isNaN(objKey)
-					? objKey + "" === newObjKey + ""
-					: +objKey === +newObjKey)
+				(isNaN(value)
+					? value + "" === newValue + ""
+					: +value === +newValue)
 			)
 		) {
 			diffs.push({
 				path: [path],
 				type: "CHANGE",
-				value: newObjKey,
-				oldValue: objKey,
+				value: newValue,
+				oldValue: value,
 			});
 		}
 	}
