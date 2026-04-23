@@ -90,11 +90,7 @@ export default function diff(
 					return difference;
 				}),
 			);
-		} else if (value === newValue) {
-			// Non-object values that are strictly equal are not differences
-			continue;
-		} else if (Number.isNaN(value) && Number.isNaN(newValue)) {
-			// treat NaN values as equivalent
+		} else if (Object.is(value,newValue) /* treat nulls as equivalent */) {
 			continue;
 		} else if (
 			// Temporal types are always objects, and always compared by their string representation
