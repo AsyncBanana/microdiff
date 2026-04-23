@@ -67,7 +67,7 @@ export default function diff(
 		const objConstructor =
 			areCompatibleObjects && value
 				? Object.getPrototypeOf(value)?.constructor?.name
-			: undefined;
+				: undefined;
 
 		if (
 			value &&
@@ -90,26 +90,17 @@ export default function diff(
 					return difference;
 				}),
 			);
-		} else if (Object.is(value,newValue) /* treat nulls as equivalent */) {
-			continue;
 		} else if (
-			// Temporal types are always objects, and always compared by their string representation
-			// This is different from the Rich objects which can coerce using valueOf or toString
-			// Temporal types purposefully throw on valueOf but all provide a reliable toString for comparison
-			areCompatibleObjects &&
-			temporalTypes[objConstructor] &&
-			String(value) === String(newValue)
+			!(
+				Object.is(value, newValue) /* treat nulls as equivalent */ ||
+				(areCompatibleObjects &&
+					temporalTypes[objConstructor] &&
+					String(value) === String(newValue)) ||
+				(areCompatibleObjects &&
+					richTypes[objConstructor] &&
+					(isNaN(value) ? value + "" === newValue + "" : +value === +newValue))
+			)
 		) {
-			continue;
-		} else if (
-			// These are the Rich Types that can be compared by coercing to primitive values
-			// but only if they are the same type of object
-			areCompatibleObjects &&
-			richTypes[objConstructor] &&
-			(isNaN(value) ? value + "" === newValue + "" : +value === +newValue)
-		) {
-			continue;
-		} else {
 			diffs.push({
 				path: [path],
 				type: "CHANGE",
