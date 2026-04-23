@@ -23,18 +23,9 @@ interface Options {
 	cyclesFix: boolean;
 }
 
-const richTypes = { Date: true, RegExp: true, String: true, Number: true };
+const richTypes = ['Date', 'RegExp', 'String', 'Number'];
 
-const temporalTypes = {
-	Instant: true,
-	PlainDate: true,
-	PlainTime: true,
-	PlainDateTime: true,
-	ZonedDateTime: true,
-	Duration: true,
-	PlainYearMonth: true,
-	PlainMonthDay: true,
-};
+const temporalTypes = Object.getOwnPropertyNames(globalThis.Temporal||{});
 
 export default function diff(
 	obj: Record<string, any> | any[],
@@ -73,8 +64,8 @@ export default function diff(
 			value &&
 			newValue &&
 			areCompatibleObjects &&
-			!richTypes[objConstructor] &&
-			!temporalTypes[objConstructor] &&
+			!richTypes.includes(objConstructor) &&
+			!temporalTypes.includes(objConstructor) &&
 			(!options.cyclesFix || !_stack.includes(value))
 		) {
 			// Recurse into objects and arrays
@@ -94,10 +85,10 @@ export default function diff(
 			!(
 				Object.is(value, newValue) /* treat nulls as equivalent */ ||
 				(areCompatibleObjects &&
-					temporalTypes[objConstructor] &&
+					temporalTypes.includes(objConstructor) &&
 					String(value) === String(newValue)) ||
 				(areCompatibleObjects &&
-					richTypes[objConstructor] &&
+					richTypes.includes(objConstructor) &&
 					(isNaN(value) ? value + "" === newValue + "" : +value === +newValue))
 			)
 		) {
