@@ -42,6 +42,17 @@ test("replace object with null", () => {
 	]);
 });
 
+test("replace null with object", () => {
+	assert.deepStrictEqual(diff({ object: null }, { object: { test: true } }), [
+		{
+			type: "CHANGE",
+			path: ["object"],
+			value: { test: true },
+			oldValue: null,
+		},
+	]);
+});
+
 test("replace object with other value", () => {
 	assert.deepStrictEqual(
 		diff({ object: { test: true } }, { object: "string" }),
