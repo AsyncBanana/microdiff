@@ -60,12 +60,19 @@ export default function diff(
 				? Object.getPrototypeOf(value)?.constructor?.name
 				: undefined;
 
+		const newObjConstructor =
+			areCompatibleObjects && newValue
+				? Object.getPrototypeOf(newValue)?.constructor?.name
+				: undefined;
+
 		if (
 			value &&
 			newValue &&
 			areCompatibleObjects &&
 			!richTypes.includes(objConstructor) &&
+			!richTypes.includes(newObjConstructor) &&
 			!temporalTypes.includes(objConstructor) &&
+			!temporalTypes.includes(newObjConstructor) &&
 			(!options.cyclesFix || !_stack.includes(value))
 		) {
 			// Recurse into objects and arrays
@@ -83,15 +90,15 @@ export default function diff(
 				subDiff.path.unshift(path);
 				diffs.push(subDiff);
 			}
-		} else if (
-			!(
-				Object.is(value, newValue) ||
-				(temporalTypes.includes(objConstructor) &&
-					String(value) === String(newValue)) ||
-				(richTypes.includes(objConstructor) &&
-					(isNaN(value) ? value + "" === newValue + "" : +value === +newValue))
-			)
-		) {
+		} else if (!(
+			Object.is(value, newValue) ||
+			(objConstructor === newObjConstructor &&
+				temporalTypes.includes(objConstructor) &&
+				String(value) === String(newValue)) ||
+			(objConstructor === newObjConstructor &&
+				richTypes.includes(objConstructor) &&
+				(isNaN(value) ? value + "" === newValue + "" : +value === +newValue))
+		)) {
 			diffs.push({
 				path: [path],
 				type: "CHANGE",
