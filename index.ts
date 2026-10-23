@@ -66,16 +66,16 @@ export default function diff(
 			areCompatibleObjects &&
 			!richTypes.includes(objConstructor) &&
 			!temporalTypes.includes(objConstructor) &&
-			(!options.cyclesFix || !_stack.includes(value))
+			(options.cyclesFix === false || !_stack.includes(value))
 		) {
 			// Recurse into objects and arrays
-			if (options.cyclesFix) {
+			if (options.cyclesFix !== false) {
 				_stack.push(value);
 			}
 
 			const subDiffs = diff(value, newValue, options, _stack);
 
-			if (options.cyclesFix) {
+			if (options.cyclesFix !== false) {
 				_stack.pop();
 			}
 
