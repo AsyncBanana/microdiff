@@ -37,9 +37,10 @@ export default function diff(
 	const isObjArray = Array.isArray(obj);
 
 	for (const key in obj) {
+		if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
 		const value = obj[key];
 		const path = isObjArray ? +key : key;
-		if (!(key in newObj)) {
+		if (!Object.prototype.hasOwnProperty.call(newObj, key)) {
 			diffs.push({
 				type: "REMOVE",
 				path: [path],
@@ -103,7 +104,8 @@ export default function diff(
 
 	const isNewObjArray = Array.isArray(newObj);
 	for (const key in newObj) {
-		if (!(key in obj)) {
+		if (!Object.prototype.hasOwnProperty.call(newObj, key)) continue;
+		if (!Object.prototype.hasOwnProperty.call(obj, key)) {
 			diffs.push({
 				type: "CREATE",
 				path: [isNewObjArray ? +key : key],
