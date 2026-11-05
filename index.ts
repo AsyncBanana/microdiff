@@ -31,10 +31,11 @@ export default function diff(
 	obj: Record<string, any> | any[],
 	newObj: Record<string, any> | any[],
 	options: Partial<Options> = { cyclesFix: true },
-	_stack: Record<string, any>[] = [],
+	_stack: [Record<string, any>, Record<string, any>][] = [],
 ): Difference[] {
 	let diffs: Difference[] = [];
 	const isObjArray = Array.isArray(obj);
+	if (options.cyclesFix) _stack.push([obj, newObj]);
 
 	for (const key in obj) {
 		const value = obj[key];
@@ -65,19 +66,19 @@ export default function diff(
 			newValue &&
 			areCompatibleObjects &&
 			!richTypes.includes(objConstructor) &&
-			!temporalTypes.includes(objConstructor) &&
-			(!options.cyclesFix || !_stack.includes(value))
+			!temporalTypes.includes(objConstructor)
 		) {
+			if (
+				options.cyclesFix &&
+				_stack.some(
+					([oldObject, newObject]) =>
+						oldObject === value && newObject === newValue,
+				)
+			) {
+				continue;
+			}
 			// Recurse into objects and arrays
-			if (options.cyclesFix) {
-				_stack.push(value);
-			}
-
 			const subDiffs = diff(value, newValue, options, _stack);
-
-			if (options.cyclesFix) {
-				_stack.pop();
-			}
 
 			for (const subDiff of subDiffs) {
 				subDiff.path.unshift(path);
@@ -111,5 +112,6 @@ export default function diff(
 			});
 		}
 	}
+	if (options.cyclesFix) _stack.pop();
 	return diffs;
 }
