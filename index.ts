@@ -36,8 +36,7 @@ export default function diff(
 	let diffs: Difference[] = [];
 	const isObjArray = Array.isArray(obj);
 
-	for (const key in obj) {
-		if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+	for (const key of Object.keys(obj)) {
 		const value = obj[key];
 		const path = isObjArray ? +key : key;
 		if (!Object.prototype.hasOwnProperty.call(newObj, key)) {
@@ -103,8 +102,7 @@ export default function diff(
 	}
 
 	const isNewObjArray = Array.isArray(newObj);
-	for (const key in newObj) {
-		if (!Object.prototype.hasOwnProperty.call(newObj, key)) continue;
+	for (const key of Object.keys(newObj)) {
 		if (!Object.prototype.hasOwnProperty.call(obj, key)) {
 			diffs.push({
 				type: "CREATE",
