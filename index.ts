@@ -89,7 +89,9 @@ export default function diff(
 				(temporalTypes.includes(objConstructor) &&
 					String(value) === String(newValue)) ||
 				(richTypes.includes(objConstructor) &&
-					(isNaN(value) ? value + "" === newValue + "" : +value === +newValue))
+					(objConstructor === "String" || isNaN(value)
+						? value + "" === newValue + ""
+						: +value === +newValue))
 			)
 		) {
 			diffs.push({
