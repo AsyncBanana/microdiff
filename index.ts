@@ -38,7 +38,10 @@ export default function diff(
 
 	for (const key in obj) {
 		const value = obj[key];
-		const path = isObjArray ? +key : key;
+		const path =
+			isObjArray && String(+key >>> 0) === key && +key < 4294967295
+				? +key
+				: key;
 		if (!(key in newObj)) {
 			diffs.push({
 				type: "REMOVE",
@@ -106,7 +109,11 @@ export default function diff(
 		if (!(key in obj)) {
 			diffs.push({
 				type: "CREATE",
-				path: [isNewObjArray ? +key : key],
+				path: [
+					isNewObjArray && String(+key >>> 0) === key && +key < 4294967295
+						? +key
+						: key,
+				],
 				value: newObj[key],
 			});
 		}
